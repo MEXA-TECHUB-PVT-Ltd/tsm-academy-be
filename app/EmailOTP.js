@@ -8,13 +8,13 @@ const EmailtemplateOTP = (user_name,password,email, subject) => {
     const transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
-            user: "testing.mtechub@gmail.com",
-            pass: "ingaorvdesudpeoy",
+            user: "tsmacademypk@gmail.com",
+            pass: "rtlobadacfjqlszh",
         },
     });
 
     const mailOptions = {
-        from: "rimshanimo22@gmail.com",
+        from: "tsmacademypk@gmail.com",
         to: email,
         subject: subject,
         html: `
@@ -149,23 +149,7 @@ const EmailtemplateOTP = (user_name,password,email, subject) => {
                   <tr>
                     <td
                       style="mso-line-height-rule: exactly; padding-left: 48px; padding-right: 48px; font-family: Montserrat, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; color: #eceff1;">
-                      <p align="center"
-                        style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; margin-bottom: 16px; cursor: default;">
-                        <a href=${facebookLink}
-                          style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #263238; text-decoration: none;"><img
-                            src="images/facebook.png" width="17" alt="Facebook"
-                            style="max-width: 100%; vertical-align: middle; line-height: 100%; border: 0; margin-right: 12px;"></a>
-                        &bull;
-                        <a href=${twitterLink}
-                          style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #263238; text-decoration: none;"><img
-                            src="images/twitter.png" width="17" alt="Twitter"
-                            style="max-width: 100%; vertical-align: middle; line-height: 100%; border: 0; margin-right: 12px;"></a>
-                        &bull;
-                        <a href=${instagramLink}
-                          style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #263238; text-decoration: none;"><img
-                            src="images/instagram.png" width="17" alt="Instagram"
-                            style="max-width: 100%; vertical-align: middle; line-height: 100%; border: 0; margin-right: 12px;"></a>
-                      </p>
+                     
                       <p style="font-family: 'Montserrat', sans-serif; mso-line-height-rule: exactly; color: #263238;">
                         Use of our service and website is subject to our
                         <a href="https://pixinvent.com/" class="hover-underline"
