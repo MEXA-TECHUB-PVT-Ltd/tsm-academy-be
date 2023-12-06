@@ -44,7 +44,7 @@ app.use("/blogs", require("./app/routes/Blogs/Blogs"))
 
 
 // const server =
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log(`
 ################################################
        Server listening on port: ${PORT}

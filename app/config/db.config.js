@@ -3,13 +3,21 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
+// const pool = new Pool ({
+//     host: process.env.HOST, 
+//     port : process.env.DB_PORT,
+//     user : process.env.USER_NAME ,
+//     password : process.env.PASSWORD,
+//     database :  process.env.DATABASE,
+//     max : process.env.MAX
+// });
 const pool = new Pool ({
-    host: process.env.HOST, 
-    port : process.env.DB_PORT,
-    user : process.env.USER_NAME ,
-    password : process.env.PASSWORD,
-    database :  process.env.DATABASE,
-    max : process.env.MAX
+  host: 'localhost', 
+  port : 5432,
+  user : 'tsm_user' ,
+  password : 'mtechub123',
+  database :  'tsm_db',
+  max : 10
 });
 
 

@@ -1,4 +1,4 @@
 // urls.js
-const admin_email="testing.mtechub@gmail.com"
+const admin_email="tsmacademypk@gmail.com"
 
 module.exports = {admin_email};
