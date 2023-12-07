@@ -526,13 +526,13 @@ exports.updatePasswordLogedIn = async (req, res) => {
                 res.json({ error: true, message: "user Doesnot Exist" });
 
             } else {
-                    const hashedPasswordFromDb = result1.rows[0].password;
-                    if (hashedPasswordFromDb === hashedPasswordOld) {
-                        const hashedPasswordNew = crypto
+                const hashedPasswordFromDb = result1.rows[0].password;
+                if (hashedPasswordFromDb === hashedPasswordOld) {
+                    const hashedPasswordNew = crypto
                         .createHash("sha256")
                         .update(new_pasword + salt)
                         .digest("hex");
-                          let query = 'UPDATE users SET ';
+                    let query = 'UPDATE users SET ';
                     let index = 2;
                     let values = [user_id];
 
@@ -552,12 +552,12 @@ exports.updatePasswordLogedIn = async (req, res) => {
                         res.json({ error: false, data: result.rows, message: "Password Updated Successfully" });
 
                     }
-                    }else{
-                        res.json({ error: true, message: "Invalid Current Password" });
+                } else {
+                    res.json({ error: true, message: "Invalid Current Password" });
 
-                    }
-                  
-                
+                }
+
+
 
             }
 
@@ -580,7 +580,7 @@ exports.updatePasswordLogedInAdmin = async (req, res) => {
             current_password,
             new_pasword
         } = req.body;
-      
+
         // const company_user = false;
         if (user_id === null || user_id === "" || user_id === undefined) {
             res.json({ error: true, message: "Please Provide user_id" });
@@ -592,10 +592,10 @@ exports.updatePasswordLogedInAdmin = async (req, res) => {
                 res.json({ error: true, message: "user Doesnot Exist" });
 
             } else {
-                    const hashedPasswordFromDb = result1.rows[0].password;
-                    if (hashedPasswordFromDb === current_password) {
-                       
-                          let query = 'UPDATE users SET ';
+                const hashedPasswordFromDb = result1.rows[0].password;
+                if (hashedPasswordFromDb === current_password) {
+
+                    let query = 'UPDATE users SET ';
                     let index = 2;
                     let values = [user_id];
 
@@ -615,12 +615,12 @@ exports.updatePasswordLogedInAdmin = async (req, res) => {
                         res.json({ error: false, data: result.rows, message: "Password Updated Successfully" });
 
                     }
-                    }else{
-                        res.json({ error: true, message: "Invalid Current Password" });
+                } else {
+                    res.json({ error: true, message: "Invalid Current Password" });
 
-                    }
-                  
-                
+                }
+
+
 
             }
 
@@ -760,7 +760,7 @@ exports.admingetAllCustomers = async (req, res) => {
 exports.getAllCustomers = async (req, res) => {
     const client = await pool.connect();
     try {
-        const query = 'SELECT * FROM users  ORDER BY created_at DESC'
+        const query = 'SELECT * FROM users ORDER BY created_at DESC'
         const result = await pool.query(query);
         let UpdatedArray = []
         let Array = result.rows
@@ -870,11 +870,19 @@ exports.getUserByUniqId = async (req, res) => {
             const program_id = result1.rows[i].program_id
             const package_id = result1.rows[i].package_id
 
+            console.log('not exist ')
             const query2 = 'SELECT * FROM programs WHERE program_id =$1'
             const result2 = await pool.query(query2, [program_id]);
 
             const query4 = 'SELECT * FROM packages WHERE package_id =$1'
             const result4 = await pool.query(query4, [package_id]);
+            const query5 = 'SELECT * FROM user_progress WHERE course_id =$1 AND user_id=$2'
+            const result5 = await pool.query(query5, [package_id, user_id]);
+            const query6 = 'SELECT * FROM product_videos WHERE package_id =$1'
+            const result6 = await pool.query(query6, [package_id]);
+            const TotalVideos = result6.rows.length
+            const userWatchedVideos = result5.rows.length
+            const percentage = (userWatchedVideos / TotalVideos) * 100;
             // console.log(result2.rows)
             Array.push({
                 program_name: result2.rows[0].title,
@@ -886,9 +894,13 @@ exports.getUserByUniqId = async (req, res) => {
                 price: result4.rows[0].package_price,
                 package_image: result4.rows[0].image,
                 package_description: result4.rows[0].description,
+                user_progress: percentage,
+                user_watched_videos: result5.rows.length,
+                total_videos: result6.rows.length
 
 
             })
+
             // result1.rows[i].program_name=result2.rows[0].program_name
         }
 
