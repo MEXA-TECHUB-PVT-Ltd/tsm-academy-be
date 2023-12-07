@@ -133,6 +133,15 @@ CREATE TABLE IF NOT EXISTS packages(
 --   updated_at TIMESTAMP DEFAULT NOW()
  
 -- );
+CREATE TABLE IF NOT EXISTS user_progress(
+  user_progress_id INT NOT NULL DEFAULT nextval('my_sequence') PRIMARY KEY,
+  course_id TEXT,
+  user_id TEXT,
+  video_id TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+ 
+);
 CREATE TABLE IF NOT EXISTS contact_us(
   contact_id INT NOT NULL DEFAULT nextval('my_sequence') PRIMARY KEY,
   name TEXT,

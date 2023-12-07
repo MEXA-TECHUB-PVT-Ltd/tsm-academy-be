@@ -20,6 +20,12 @@ router.post("/getPackageByPriceId" , controller.getPackageByPriceId);
 
 router.get("/getAllVideos" , controller.getAllVideos);
 router.post("/getByVideoId" , controller.getByVideoId);
+router.post("/addProgressUser" , controller.addProgressUser);
+router.post("/getVideoProgress" , controller.getVideoProgress);
+router.post("/calculateProgressUser" , controller.calculateProgressUser);
+
+
+
 
 
 module.exports = router;

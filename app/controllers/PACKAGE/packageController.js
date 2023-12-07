@@ -367,7 +367,7 @@ exports.getAllPackages = async (req, res) => {
     try {
 
         //    const type="admin"
-        const query = 'SELECT * FROM packages'
+        const query = 'SELECT * FROM packages ORDER BY created_at DESC'
         const result = await pool.query(query);
         if (result.rows.length === 0) {
         } else {
@@ -420,11 +420,11 @@ exports.getuserOtherCourses = async (req, res) => {
         const { user_id } = req.body
         // console.log(user_id)
         const queryUser = 'SELECT * FROM req_programs WHERE user_id = $1'
-        const resultUser = await pool.query(queryUser,[user_id]);
+        const resultUser = await pool.query(queryUser, [user_id]);
         const excludedPackageIds = resultUser.rows.map(row => row.package_id);
         const params = [excludedPackageIds];
         const query = 'SELECT * FROM packages WHERE package_id NOT IN (SELECT unnest($1::integer[]))'
-        const result = await pool.query(query,params);
+        const result = await pool.query(query, params);
         // console.log(result.rows)
         if (result.rows.length === 0) {
         } else {
@@ -592,6 +592,181 @@ exports.getByVideoId = async (req, res) => {
         });
         //     }
         // });
+    }
+    catch (err) {
+        console.log(err)
+        res.json({
+            message: "Error Occurred",
+            status: false,
+            error: err.message
+        })
+    }
+    finally {
+        client.release();
+    }
+}
+exports.addProgressUser = async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const {
+            course_id,
+            user_id,
+            video_id
+        } = req.body;
+        //    const type="admin"
+        if (user_id === null || user_id === "" || user_id === undefined) {
+            res.json({ error: true, message: "Please Provide User Id " });
+
+        } else {
+            const query = 'SELECT * FROM user_progress WHERE course_id=$1 AND user_id=$2 AND video_id=$3'
+            const result = await pool.query(query, [
+                course_id,
+                user_id,
+                video_id]);
+            if (result.rows.length === 0) {
+                const userData = await pool.query("INSERT INTO user_progress(course_id,user_id,video_id) VALUES($1,$2,$3) returning *",
+                    [
+                        course_id,
+                        user_id,
+                        video_id
+                    ])
+                if (userData.rows.length === 0) {
+                    res.json({ error: true, data: [], message: "Can't Create Progress" });
+
+
+                } else {
+
+                    const data = userData.rows[0]
+                    res.json({
+                        error: false, data: data, message: "Progress Created Successfully"
+                    });
+
+                }
+            } else {
+                res.json({
+                    error: false, data: [], message: "Already Marked Completed"
+                });
+            }
+
+
+        }
+    }
+    catch (err) {
+        console.log(err)
+        res.json({
+            message: "Error Occurred",
+            status: false,
+            error: err.message
+        })
+    }
+    finally {
+        client.release();
+    }
+}
+exports.getVideoProgress = async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const {
+            course_id,
+            user_id,
+            video_id
+        } = req.body;
+        //    const type="admin"
+        if (user_id === null || user_id === "" || user_id === undefined) {
+            res.json({ error: true, message: "Please Provide User Id " });
+
+        } else {
+            const query = 'SELECT * FROM user_progress WHERE course_id=$1 AND user_id=$2 AND video_id=$3'
+            const result = await pool.query(query, [
+                course_id,
+                user_id,
+                video_id]);
+            // console.log(result)
+            if (result.rows.length === 0) {
+
+
+                res.json({
+                    error: false, status: false, data: [], message: "Not Marked"
+                });
+
+
+            } else {
+                res.json({
+                    error: false, status: true, data: result.rows[0], message: "Already Marked "
+                });
+            }
+
+
+        }
+    }
+    catch (err) {
+        console.log(err)
+        res.json({
+            message: "Error Occurred",
+            status: false,
+            error: err.message
+        })
+    }
+    finally {
+        client.release();
+    }
+}
+exports.calculateProgressUser = async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const {
+            course_id,
+            user_id,
+        } = req.body;
+        //    const type="admin"
+        if (user_id === null || user_id === "" || user_id === undefined) {
+            res.json({ error: true, message: "Please Provide User Id " });
+
+        } else {
+            const queryTotal = 'SELECT * FROM product_videos WHERE package_id=$1'
+            const resultTotal = await pool.query(queryTotal, [
+                course_id,
+            ]);
+            if (resultTotal.rows.length === 0) {
+                const total_videos = 0;
+
+
+                res.json({
+                    error: false, progress: total_videos
+                    , message: "Progress Fetched"
+                });
+
+
+            } else {
+                let TotalCourseVideos = resultTotal.rows.length
+                const query = 'SELECT * FROM user_progress WHERE course_id=$1 AND user_id=$2'
+                const result = await pool.query(query, [
+                    course_id,
+                    user_id,
+                ]);
+                // console.log(result)
+                if (result.rows.length === 0) {
+
+
+                    res.json({
+                        error: false, progress: 0, message: "Progress Fetched"
+                    });
+
+
+                } else {
+                    const totalVideosUserWatched = result.rows.length;
+                    const percentage = (totalVideosUserWatched / TotalCourseVideos) * 100;
+
+                    res.json({
+                        error: false, status: true,total:TotalCourseVideos,userWatched:totalVideosUserWatched, progress: percentage, message: "Progress Fetched "
+                    });
+                }
+            }
+
+
+
+
+        }
     }
     catch (err) {
         console.log(err)
